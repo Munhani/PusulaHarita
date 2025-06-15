@@ -1,30 +1,29 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { FaPhone, FaMobile, FaEnvelope, FaClock, FaMapMarkerAlt } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { FaPhone, FaMobile, FaEnvelope, FaMapMarkerAlt, FaClock } from 'react-icons/fa';
+
+interface WorkingHours {
+  id: number;
+  day: string;
+  hours: string;
+  contactInfoId: number;
+}
 
 interface ContactInfo {
+  id: number;
   address: string;
   phone: string;
   mobile: string;
   email: string;
-  workingHours: {
-    weekdays: string;
-    saturday: string;
-    sunday: string;
-  };
+  workingHours: WorkingHours[];
 }
 
 export default function ContactPage() {
   const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    subject: '',
-    message: ''
-  });
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchContactInfo = async () => {
@@ -35,178 +34,158 @@ export default function ContactPage() {
         }
         const data = await response.json();
         setContactInfo(data);
-      } catch (error) {
-        console.error('İletişim bilgileri alınırken hata oluştu:', error);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Bir hata oluştu');
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchContactInfo();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus('loading');
-
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Form gönderilemedi');
-      }
-
-      setStatus('success');
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: ''
-      });
-    } catch (error) {
-      console.error('Form gönderilirken hata oluştu:', error);
-      setStatus('error');
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  if (!contactInfo) {
-    return <div>Yükleniyor...</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Yükleniyor...</p>
+        </div>
+      </div>
+    );
   }
 
-  // Google Maps embed URL'si oluştur
-  const mapsEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(contactInfo.address)}&output=embed`;
+  if (error || !contactInfo) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error || 'İletişim bilgileri bulunamadı'}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors"
+          >
+            Yeniden Dene
+          </button>
+        </div>
+      </div>
+    );
+  }
 
-  // Google Maps navigasyon URL'si oluştur
+  // Google Maps URL'si oluştur
   const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(contactInfo.address)}`;
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
-            İletişim
-          </h1>
-          <p className="mt-4 text-lg text-gray-600">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">İletişim</h1>
+          <p className="text-xl text-gray-600">
             Bizimle iletişime geçin, size yardımcı olmaktan mutluluk duyarız.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Google Maps */}
-        <div className="mb-12">
-          <iframe
-            src={mapsEmbedUrl}
-            width="100%"
-            height="450"
-            style={{ border: 0 }}
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            className="rounded-lg shadow-lg"
-          ></iframe>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* İletişim Bilgileri */}
-          <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="bg-white rounded-xl shadow-sm p-8"
+          >
             <h2 className="text-2xl font-semibold text-gray-900 mb-6">İletişim Bilgileri</h2>
             <div className="space-y-6">
-              <div className="flex items-start space-x-4">
-                <FaMapMarkerAlt className="text-blue-600 mt-1" />
-                <div>
-                  <h3 className="font-medium text-gray-900">Adres</h3>
-                  <a 
+              <div className="flex items-start">
+                <FaMapMarkerAlt className="w-6 h-6 text-violet-600 mt-1" />
+                <div className="ml-4">
+                  <h3 className="text-lg font-medium text-gray-900">Adres</h3>
+                  <a
                     href={mapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                    className="text-gray-600 hover:text-violet-600 transition-colors"
                   >
-                    {contactInfo.address}
+                    {contactInfo.address.split('\n').map((line, i) => (
+                      <p key={i}>{line}</p>
+                    ))}
                   </a>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4">
-                <FaPhone className="text-blue-600 mt-1" />
-                <div>
-                  <h3 className="font-medium text-gray-900">Telefon</h3>
-                  <a 
+              <div className="flex items-start">
+                <FaPhone className="w-6 h-6 text-violet-600 mt-1" />
+                <div className="ml-4">
+                  <h3 className="text-lg font-medium text-gray-900">Telefon</h3>
+                  <a
                     href={`tel:${contactInfo.phone}`}
-                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                    className="text-gray-600 hover:text-violet-600 transition-colors"
                   >
                     {contactInfo.phone}
                   </a>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4">
-                <FaMobile className="text-blue-600 mt-1" />
-                <div>
-                  <h3 className="font-medium text-gray-900">Cep Telefonu</h3>
-                  <a 
+              <div className="flex items-start">
+                <FaMobile className="w-6 h-6 text-violet-600 mt-1" />
+                <div className="ml-4">
+                  <h3 className="text-lg font-medium text-gray-900">Mobil</h3>
+                  <a
                     href={`tel:${contactInfo.mobile}`}
-                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                    className="text-gray-600 hover:text-violet-600 transition-colors"
                   >
                     {contactInfo.mobile}
                   </a>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4">
-                <FaEnvelope className="text-blue-600 mt-1" />
-                <div>
-                  <h3 className="font-medium text-gray-900">E-posta</h3>
-                  <a 
+              <div className="flex items-start">
+                <FaEnvelope className="w-6 h-6 text-violet-600 mt-1" />
+                <div className="ml-4">
+                  <h3 className="text-lg font-medium text-gray-900">E-posta</h3>
+                  <a
                     href={`mailto:${contactInfo.email}`}
-                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                    className="text-gray-600 hover:text-violet-600 transition-colors"
                   >
                     {contactInfo.email}
                   </a>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4">
-                <FaClock className="text-blue-600 mt-1" />
-                <div>
-                  <h3 className="font-medium text-gray-900">Çalışma Saatleri</h3>
-                  <div className="text-gray-600">
-                    <p>Pazartesi - Cuma: {contactInfo.workingHours.weekdays}</p>
-                    <p>Cumartesi: {contactInfo.workingHours.saturday}</p>
-                    <p>Pazar: {contactInfo.workingHours.sunday}</p>
-                  </div>
+              <div className="flex items-start">
+                <FaClock className="w-6 h-6 text-violet-600 mt-1" />
+                <div className="ml-4">
+                  <h3 className="text-lg font-medium text-gray-900">Çalışma Saatleri</h3>
+                  {contactInfo.workingHours?.map((hours) => (
+                    <p key={hours.id} className="text-gray-600">
+                      {hours.day}: {hours.hours}
+                    </p>
+                  ))}
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* İletişim Formu */}
-          <div className="bg-white rounded-lg shadow-lg p-8">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="bg-white rounded-xl shadow-sm p-8"
+          >
             <h2 className="text-2xl font-semibold text-gray-900 mb-6">Bize Ulaşın</h2>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form className="space-y-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                   Adınız Soyadınız
                 </label>
                 <input
                   type="text"
-                  name="name"
                   id="name"
+                  name="name"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500"
                   required
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
 
@@ -216,49 +195,11 @@ export default function ContactPage() {
                 </label>
                 <input
                   type="email"
-                  name="email"
                   id="email"
+                  name="email"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500"
                   required
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
-              </div>
-
-              <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                  Telefon Numaranız
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  id="phone"
-                  required
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-700">
-                  Konu
-                </label>
-                <select
-                  name="subject"
-                  id="subject"
-                  required
-                  value={formData.subject}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                >
-                  <option value="">Seçiniz</option>
-                  <option value="arazi-olcumu">Arazi Ölçümü</option>
-                  <option value="kadastro">Kadastro</option>
-                  <option value="imar-planlari">İmar Planları</option>
-                  <option value="jeodezik-olcumler">Jeodezik Ölçümler</option>
-                  <option value="diger">Diğer</option>
-                </select>
               </div>
 
               <div>
@@ -266,61 +207,36 @@ export default function ContactPage() {
                   Mesajınız
                 </label>
                 <textarea
-                  name="message"
                   id="message"
+                  name="message"
                   rows={4}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-violet-500 focus:ring-violet-500"
                   required
-                  value={formData.message}
-                  onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                />
+                ></textarea>
               </div>
 
-              <div>
-                <button
-                  type="submit"
-                  disabled={status === 'loading'}
-                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {status === 'loading' ? 'Gönderiliyor...' : 'Gönder'}
-                </button>
-              </div>
-
-              {status === 'success' && (
-                <div className="rounded-md bg-green-50 p-4">
-                  <div className="flex">
-                    <div className="flex-shrink-0">
-                      <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-sm font-medium text-green-800">
-                        Mesajınız başarıyla gönderildi. En kısa sürede size dönüş yapacağız.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {status === 'error' && (
-                <div className="rounded-md bg-red-50 p-4">
-                  <div className="flex">
-                    <div className="flex-shrink-0">
-                      <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-sm font-medium text-red-800">
-                        Mesajınız gönderilirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
+              <button
+                type="submit"
+                className="w-full px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors"
+              >
+                Gönder
+              </button>
             </form>
-          </div>
+          </motion.div>
+        </div>
+
+        {/* Google Maps */}
+        <div className="mt-12">
+          <iframe
+            src={`https://www.google.com/maps?q=${encodeURIComponent(contactInfo.address)}&output=embed`}
+            width="100%"
+            height="450"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="rounded-lg shadow-lg"
+          ></iframe>
         </div>
       </div>
     </div>

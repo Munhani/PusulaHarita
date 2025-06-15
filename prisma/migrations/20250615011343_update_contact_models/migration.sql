@@ -12,10 +12,11 @@ CREATE TABLE "ContactInfo" (
 -- CreateTable
 CREATE TABLE "WorkingHours" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "weekdays" TEXT NOT NULL,
-    "saturday" TEXT NOT NULL,
-    "sunday" TEXT NOT NULL,
+    "day" TEXT NOT NULL,
+    "hours" TEXT NOT NULL,
     "contactInfoId" INTEGER NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
     CONSTRAINT "WorkingHours_contactInfoId_fkey" FOREIGN KEY ("contactInfoId") REFERENCES "ContactInfo" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
@@ -31,4 +32,3 @@ CREATE TABLE "ContactForm" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "WorkingHours_contactInfoId_key" ON "WorkingHours"("contactInfoId");
