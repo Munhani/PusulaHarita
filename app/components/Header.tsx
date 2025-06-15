@@ -12,7 +12,7 @@ export default function Header() {
     { name: 'Ana Sayfa', href: '/' },
     { name: 'Hizmetlerimiz', href: '/hizmetlerimiz' },
     { name: 'Hakkımızda', href: '/hakkimizda' },
-    { name: 'Projeler', href: '/projeler' },
+    { name: 'RealityModel', href: '/projeler' },
     { name: 'İletişim', href: '/iletisim' },
   ];
 
@@ -28,6 +28,8 @@ export default function Header() {
               height={50}
               className="h-12 w-auto"
               priority
+              loading="eager"
+              quality={75}
             />
           </Link>
 

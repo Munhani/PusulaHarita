@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { MapIcon, BuildingOfficeIcon, GlobeAltIcon, ChartBarIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { useRef } from 'react';
+import Link from 'next/link';
 
 export default function Home() {
   const containerRef = useRef(null);
@@ -51,16 +52,20 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="flex flex-col md:flex-row gap-4 justify-center items-center"
           >
-            <button className="group relative px-8 py-4 bg-violet-600 text-white rounded-full font-semibold overflow-hidden">
-              <span className="relative z-10 flex items-center gap-2">
-                Hizmetlerimizi Keşfedin
-                <ChevronRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-fuchsia-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            </button>
-            <button className="px-8 py-4 border-2 border-violet-600/20 text-violet-600 rounded-full font-semibold hover:bg-violet-50 transition-colors">
-              İletişime Geçin
-            </button>
+            <Link href="/hizmetlerimiz">
+              <button className="group relative px-8 py-4 bg-violet-600 text-white rounded-full font-semibold overflow-hidden">
+                <span className="relative z-10 flex items-center gap-2">
+                  Hizmetlerimizi Keşfedin
+                  <ChevronRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-fuchsia-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              </button>
+            </Link>
+            <Link href="/iletisim">
+              <button className="px-8 py-4 border-2 border-violet-600/20 text-violet-600 rounded-full font-semibold hover:bg-violet-50 transition-colors">
+                İletişime Geçin
+              </button>
+            </Link>
           </motion.div>
         </motion.div>
 
@@ -156,31 +161,44 @@ export default function Home() {
                 <p className="text-violet-700 mb-8 text-lg">
                   Müşteri memnuniyeti ve kaliteli hizmet anlayışımızla, sektörde güvenilir bir çözüm ortağı olmaya devam ediyoruz.
                 </p>
-                <button className="group relative px-8 py-4 bg-violet-600 text-white rounded-full font-semibold overflow-hidden">
+                <Link href="/hakkimizda" className="group relative px-8 py-4 bg-violet-600 text-white rounded-full font-semibold overflow-hidden inline-block">
                   <span className="relative z-10 flex items-center gap-2">
                     Daha Fazla Bilgi
                     <ChevronRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-fuchsia-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                </button>
+                </Link>
               </div>
             </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              className="relative"
+          </div>
+        </div>
+      </section>
+
+      {/* Katalog Section */}
+      <section className="relative py-32 bg-gradient-to-b from-white to-violet-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Katalog</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Tüm projelerimizi ve hizmetlerimizi içeren kataloğumuzu aşağıdan inceleyebilir veya indirebilirsiniz.
+            </p>
+            <a
+              href="/images/Katalog.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-6 py-3 bg-violet-600 text-white rounded-full font-semibold shadow hover:bg-violet-700 transition-colors mb-4 mt-8"
             >
-              <div className="absolute -inset-4 bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-2xl opacity-10 blur-2xl"></div>
-              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
-                <Image
-                  src="/about-image.jpg"
-                  alt="Pusula Harita Ofis"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            </motion.div>
+              Kataloğu Görüntüle / İndir
+            </a>
+            <div className="mt-8 flex justify-center">
+              <iframe
+                src="/images/Katalog.pdf"
+                width="100%"
+                height="600"
+                style={{ maxWidth: '900px', border: 0 }}
+                title="Katalog PDF"
+              ></iframe>
+            </div>
           </div>
         </div>
       </section>

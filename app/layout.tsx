@@ -4,7 +4,11 @@ import './globals.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true,
+})
 
 export const metadata: Metadata = {
   title: 'Pusula Harita - Modern Harita Mühendisliği Çözümleri',
@@ -20,10 +24,16 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="tr">
-      <body className={inter.className}>
+    <html lang="tr" className={inter.className}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
+      <body>
         <Header />
-        {children}
+        <main className="pt-16">
+          {children}
+        </main>
         <Footer />
       </body>
     </html>

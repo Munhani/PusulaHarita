@@ -1,97 +1,59 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 import nodemailer from 'nodemailer';
 
-// PrismaClient'ı global olarak tanımla
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
-
-// PrismaClient'ı bir kez oluştur ve yeniden kullan
-const prisma = globalForPrisma.prisma || new PrismaClient();
-
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
-
 export async function POST(request: Request) {
-  if (request.method !== 'POST') {
-    return NextResponse.json(
-      { success: false, error: 'Method not allowed' },
-      { status: 405 }
-    );
-  }
-
   try {
     const body = await request.json();
-    const { name, email, message } = body;
+    const { name, email, phone, subject, message } = body;
 
-    // Input doğrulama
-    if (!name || !email || !message) {
-      return NextResponse.json(
-        { success: false, error: 'Tüm alanları doldurun' },
-        { status: 400 }
-      );
-    }
-
-    if (!email.includes('@')) {
-      return NextResponse.json(
-        { success: false, error: 'Geçerli bir e-posta adresi girin' },
-        { status: 400 }
-      );
-    }
-
-    // Veritabanına kaydet
-    const contact = await prisma.contact.create({
+    // Form verilerini veritabanına kaydet
+    const contactForm = await prisma.contactForm.create({
       data: {
         name,
         email,
+        phone,
+        subject,
         message,
       },
     });
 
-    // E-posta gönder
-    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-      const transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-        port: Number(process.env.EMAIL_PORT) || 587,
-        secure: false,
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
+    // E-posta gönderme işlemi
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT),
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
 
-      // E-posta gönderme işlemini try-catch bloğuna al
-      try {
-        await transporter.sendMail({
-          from: process.env.EMAIL_USER,
-          to: process.env.EMAIL_USER,
-          subject: 'Yeni İletişim Formu Mesajı',
-          html: `
-            <h2>Yeni İletişim Formu Mesajı</h2>
-            <p><strong>Ad Soyad:</strong> ${name}</p>
-            <p><strong>E-posta:</strong> ${email}</p>
-            <p><strong>Mesaj:</strong></p>
-            <p>${message}</p>
-          `,
-        });
-      } catch (emailError) {
-        console.error('E-posta gönderme hatası:', emailError);
-        // E-posta gönderilemese bile veritabanına kaydedildiği için başarılı sayıyoruz
-      }
-    } else {
-      console.warn('E-posta ayarları eksik');
-    }
+    const mailOptions = {
+      from: process.env.SMTP_USER,
+      to: process.env.CONTACT_EMAIL,
+      subject: `Yeni İletişim Formu: ${subject}`,
+      html: `
+        <h2>Yeni İletişim Formu</h2>
+        <p><strong>Ad Soyad:</strong> ${name}</p>
+        <p><strong>E-posta:</strong> ${email}</p>
+        <p><strong>Telefon:</strong> ${phone}</p>
+        <p><strong>Konu:</strong> ${subject}</p>
+        <p><strong>Mesaj:</strong></p>
+        <p>${message}</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
 
     return NextResponse.json({ 
       success: true, 
-      data: contact,
-      message: 'Mesajınız başarıyla gönderildi. En kısa sürede size dönüş yapacağız.'
+      message: 'Mesajınız başarıyla gönderildi.' 
     });
   } catch (error) {
-    console.error('İletişim formu hatası:', error);
+    console.error('İletişim formu gönderilirken hata oluştu:', error);
     return NextResponse.json(
-      { 
-        success: false, 
-        error: 'Bir hata oluştu. Lütfen daha sonra tekrar deneyin.' 
-      },
+      { error: 'Mesajınız gönderilemedi. Lütfen daha sonra tekrar deneyin.' },
       { status: 500 }
     );
   }
