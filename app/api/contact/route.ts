@@ -2,7 +2,13 @@ import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import nodemailer from 'nodemailer';
 
-const prisma = new PrismaClient();
+// PrismaClient'ı global olarak tanımla
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
+
+// PrismaClient'ı bir kez oluştur ve yeniden kullan
+const prisma = globalForPrisma.prisma || new PrismaClient();
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 export async function POST(request: Request) {
   if (request.method !== 'POST') {
@@ -41,33 +47,37 @@ export async function POST(request: Request) {
     });
 
     // E-posta gönder
-    const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: Number(process.env.EMAIL_PORT),
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    // E-posta gönderme işlemini try-catch bloğuna al
-    try {
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: process.env.EMAIL_USER,
-        subject: 'Yeni İletişim Formu Mesajı',
-        html: `
-          <h2>Yeni İletişim Formu Mesajı</h2>
-          <p><strong>Ad Soyad:</strong> ${name}</p>
-          <p><strong>E-posta:</strong> ${email}</p>
-          <p><strong>Mesaj:</strong></p>
-          <p>${message}</p>
-        `,
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      const transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+        port: Number(process.env.EMAIL_PORT) || 587,
+        secure: false,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
       });
-    } catch (emailError) {
-      console.error('E-posta gönderme hatası:', emailError);
-      // E-posta gönderilemese bile veritabanına kaydedildiği için başarılı sayıyoruz
+
+      // E-posta gönderme işlemini try-catch bloğuna al
+      try {
+        await transporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: process.env.EMAIL_USER,
+          subject: 'Yeni İletişim Formu Mesajı',
+          html: `
+            <h2>Yeni İletişim Formu Mesajı</h2>
+            <p><strong>Ad Soyad:</strong> ${name}</p>
+            <p><strong>E-posta:</strong> ${email}</p>
+            <p><strong>Mesaj:</strong></p>
+            <p>${message}</p>
+          `,
+        });
+      } catch (emailError) {
+        console.error('E-posta gönderme hatası:', emailError);
+        // E-posta gönderilemese bile veritabanına kaydedildiği için başarılı sayıyoruz
+      }
+    } else {
+      console.warn('E-posta ayarları eksik');
     }
 
     return NextResponse.json({ 

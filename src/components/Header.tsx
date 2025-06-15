@@ -10,7 +10,7 @@ export default function Header() {
 
   const menuItems = [
     { name: 'Ana Sayfa', href: '/' },
-    { name: 'Hizmetlerimiz', href: '/hizmetlerimiz' },
+    { name: 'Hizmetlerimiz', href: '/hizmetler' },
     { name: 'Hakkımızda', href: '/hakkimizda' },
     { name: 'Projeler', href: '/projeler' },
     { name: 'İletişim', href: '/iletisim' },
