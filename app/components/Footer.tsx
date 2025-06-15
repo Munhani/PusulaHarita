@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { FaPhone, FaMobile, FaEnvelope, FaClock, FaMapMarkerAlt } from 'react-icons/fa';
 
 interface ContactInfo {
   address: string;
@@ -44,50 +45,58 @@ export default function Footer() {
     fetchContactInfo();
   }, []);
 
+  const currentYear = new Date().getFullYear();
+  const address = "Kadıköy, İstanbul";
+  const phone = "+90 555 123 4567";
+  const mobile = "+90 555 123 4567";
+  const email = "info@pusulaharita.com";
+  const workingHours = "Pazartesi - Cuma: 09:00 - 18:00";
+
+  // Google Maps navigasyon URL'si oluştur
+  const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`;
+
   return (
     <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* İletişim Bilgileri */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">İletişim Bilgileri</h3>
-            <div className="space-y-2">
-              <p className="flex items-center">
-                <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                {contactInfo.address}
-              </p>
-              <p className="flex items-center">
-                <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-                {contactInfo.phone}
-              </p>
-              <p className="flex items-center">
-                <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-                {contactInfo.mobile}
-              </p>
-              <p className="flex items-center">
-                <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                {contactInfo.email}
-              </p>
-            </div>
-          </div>
-
-          {/* Çalışma Saatleri */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Çalışma Saatleri</h3>
-            <div className="space-y-2">
-              <p>Pazartesi - Cuma: {contactInfo.workingHours.weekdays}</p>
-              <p>Cumartesi: {contactInfo.workingHours.saturday}</p>
-              <p>Pazar: {contactInfo.workingHours.sunday}</p>
-            </div>
+            <h3 className="text-lg font-semibold mb-4">İletişim</h3>
+            <ul className="space-y-3">
+              <li className="flex items-center space-x-3">
+                <FaMapMarkerAlt className="text-blue-400" />
+                <a 
+                  href={mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-blue-400 transition-colors"
+                >
+                  {address}
+                </a>
+              </li>
+              <li className="flex items-center space-x-3">
+                <FaPhone className="text-blue-400" />
+                <a href={`tel:${phone}`} className="hover:text-blue-400 transition-colors">
+                  {phone}
+                </a>
+              </li>
+              <li className="flex items-center space-x-3">
+                <FaMobile className="text-blue-400" />
+                <a href={`tel:${mobile}`} className="hover:text-blue-400 transition-colors">
+                  {mobile}
+                </a>
+              </li>
+              <li className="flex items-center space-x-3">
+                <FaEnvelope className="text-blue-400" />
+                <a href={`mailto:${email}`} className="hover:text-blue-400 transition-colors">
+                  {email}
+                </a>
+              </li>
+              <li className="flex items-center space-x-3">
+                <FaClock className="text-blue-400" />
+                <span>{workingHours}</span>
+              </li>
+            </ul>
           </div>
 
           {/* Hızlı Linkler */}
@@ -95,31 +104,89 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Hızlı Linkler</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/hizmetlerimiz" className="hover:text-gray-300 transition-colors">
-                  Hizmetlerimiz
+                <Link href="/" className="hover:text-blue-400 transition-colors">
+                  Ana Sayfa
                 </Link>
               </li>
               <li>
-                <Link href="/hakkimizda" className="hover:text-gray-300 transition-colors">
+                <Link href="/hakkimizda" className="hover:text-blue-400 transition-colors">
                   Hakkımızda
                 </Link>
               </li>
               <li>
-                <Link href="/projeler" className="hover:text-gray-300 transition-colors">
-                  Projeler
+                <Link href="/hizmetler" className="hover:text-blue-400 transition-colors">
+                  Hizmetler
                 </Link>
               </li>
               <li>
-                <Link href="/iletisim" className="hover:text-gray-300 transition-colors">
+                <Link href="/iletisim" className="hover:text-blue-400 transition-colors">
                   İletişim
                 </Link>
               </li>
             </ul>
           </div>
+
+          {/* Hizmetler */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Hizmetlerimiz</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/hizmetler/arazi-olcumu" className="hover:text-blue-400 transition-colors">
+                  Arazi Ölçümü
+                </Link>
+              </li>
+              <li>
+                <Link href="/hizmetler/kadastro" className="hover:text-blue-400 transition-colors">
+                  Kadastro
+                </Link>
+              </li>
+              <li>
+                <Link href="/hizmetler/imar-planlari" className="hover:text-blue-400 transition-colors">
+                  İmar Planları
+                </Link>
+              </li>
+              <li>
+                <Link href="/hizmetler/jeodezik-olcumler" className="hover:text-blue-400 transition-colors">
+                  Jeodezik Ölçümler
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Sosyal Medya */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Sosyal Medya</h3>
+            <div className="flex space-x-4">
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue-400 transition-colors"
+              >
+                Facebook
+              </a>
+              <a
+                href="https://twitter.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue-400 transition-colors"
+              >
+                Twitter
+              </a>
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-blue-400 transition-colors"
+              >
+                Instagram
+              </a>
+            </div>
+          </div>
         </div>
 
         <div className="mt-8 pt-8 border-t border-gray-800 text-center">
-          <p>&copy; {new Date().getFullYear()} Pusula Harita. Tüm hakları saklıdır.</p>
+          <p>&copy; {currentYear} Pusula Harita. Tüm hakları saklıdır.</p>
         </div>
       </div>
     </footer>
