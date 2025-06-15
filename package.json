@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate"
@@ -13,6 +13,7 @@
     "@heroicons/react": "^2.1.1",
     "@prisma/client": "^5.10.2",
     "@tailwindcss/forms": "^0.5.7",
+    "critters": "^0.0.20",
     "framer-motion": "^11.0.8",
     "next": "14.1.0",
     "nodemailer": "^6.9.12",
