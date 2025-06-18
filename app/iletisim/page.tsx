@@ -20,6 +20,7 @@ interface WorkingHour {
 
 export default function ContactPage() {
   const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -44,8 +45,27 @@ export default function ContactPage() {
       }
     } catch (error) {
       console.error('İletişim bilgileri alınırken hata:', error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  // Varsayılan iletişim bilgileri
+  const defaultContactInfo: ContactInfo = {
+    id: 1,
+    address: 'Karlıbayır Mah. Selçuklu Cd. No:5 D:11 Arnavutköy/İSTANBUL',
+    phone: '+90 212 597 97 00',
+    mobile: '+90 533 490 29 85',
+    email: 'tsivri@pusulaharita.tr',
+    workingHours: [
+      { id: 1, day: 'Pazartesi - Cuma', hours: '09:00 - 18:00' },
+      { id: 2, day: 'Cumartesi', hours: '09:00 - 14:00' },
+      { id: 3, day: 'Pazar', hours: 'Kapalı' }
+    ]
+  };
+
+  // contactInfo yoksa varsayılan değerleri kullan
+  const displayContactInfo = contactInfo || defaultContactInfo;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -123,7 +143,7 @@ export default function ContactPage() {
               </p>
             </div>
 
-            {contactInfo && (
+            {displayContactInfo && (
               <div className="space-y-6">
                 {/* Adres */}
                 <div className="flex items-start space-x-4">
@@ -132,7 +152,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">Adres</h3>
-                    <p className="text-gray-600">{contactInfo.address}</p>
+                    <p className="text-gray-600">{displayContactInfo.address}</p>
                   </div>
                 </div>
 
@@ -145,13 +165,13 @@ export default function ContactPage() {
                     <h3 className="font-semibold text-gray-900 mb-1">Telefon</h3>
                     <div className="space-y-1">
                       <p className="text-gray-600">
-                        <a href={`tel:${contactInfo.phone}`} className="hover:text-blue-600 transition-colors">
-                          {contactInfo.phone}
+                        <a href={`tel:${displayContactInfo.phone}`} className="hover:text-blue-600 transition-colors">
+                          {displayContactInfo.phone}
                         </a>
                       </p>
                       <p className="text-gray-600">
-                        <a href={`tel:${contactInfo.mobile}`} className="hover:text-blue-600 transition-colors">
-                          {contactInfo.mobile}
+                        <a href={`tel:${displayContactInfo.mobile}`} className="hover:text-blue-600 transition-colors">
+                          {displayContactInfo.mobile}
                         </a>
                       </p>
                     </div>
@@ -166,8 +186,8 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">E-posta</h3>
                     <p className="text-gray-600">
-                      <a href={`mailto:${contactInfo.email}`} className="hover:text-blue-600 transition-colors">
-                        {contactInfo.email}
+                      <a href={`mailto:${displayContactInfo.email}`} className="hover:text-blue-600 transition-colors">
+                        {displayContactInfo.email}
                       </a>
                     </p>
                   </div>
@@ -181,7 +201,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-2">Çalışma Saatleri</h3>
                     <div className="space-y-1">
-                      {contactInfo.workingHours.map((hour) => (
+                      {displayContactInfo.workingHours.map((hour) => (
                         <div key={hour.id} className="flex justify-between text-gray-600">
                           <span>{hour.day}</span>
                           <span>{hour.hours}</span>
@@ -335,13 +355,13 @@ export default function ContactPage() {
                 title="Pusula Harita Konumu"
               ></iframe>
             </div>
-            {contactInfo && (
+            {displayContactInfo && (
               <div className="mt-6 text-center">
                 <p className="text-gray-600">
-                  <strong>Adres:</strong> {contactInfo.address}
+                  <strong>Adres:</strong> {displayContactInfo.address}
                 </p>
                 <a
-                  href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(contactInfo.address)}`}
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(displayContactInfo.address)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-block mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
