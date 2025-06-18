@@ -13,6 +13,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Pusula Harita - Modern Harita Mühendisliği Çözümleri',
   description: 'Pusula Harita, harita mühendisliği alanında profesyonel çözümler sunan lider bir firmadır. Kadastro, GPS ölçümleri, harita çizimi ve arazi analizi hizmetleri.',
+  keywords: 'Başakşehir Harita, Lihkab, Başakşehir Lihkab, Reality Model, Dron, Dron ölçümleri, MAPEG, kentsel dönüşüm, ortofoto, orto foto, harita mühendisliği, kadastro, GPS ölçümleri, arazi ölçümü, harita çizimi, imar planları, jeodezik ölçümler, total station, lazer tarama, 3D modelleme, parsellasyon, aplikasyon, topografik harita, koordinat ölçümü, yapı ruhsatı, yapı denetimi',
   icons: {
     icon: '/images/Pusula.ico',
   },
