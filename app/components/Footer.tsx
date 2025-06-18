@@ -18,31 +18,45 @@ interface ContactInfo {
 
 export default function Footer() {
   const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
+  const [loading, setLoading] = useState(true);
   const currentYear = new Date().getFullYear();
 
   useEffect(() => {
     const fetchContactInfo = async () => {
       try {
         const response = await fetch('/api/contact-info');
-        if (!response.ok) {
-          throw new Error('İletişim bilgileri alınamadı');
+        if (response.ok) {
+          const data = await response.json();
+          setContactInfo(data);
         }
-        const data = await response.json();
-        setContactInfo(data);
       } catch (error) {
         console.error('İletişim bilgileri alınırken hata oluştu:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchContactInfo();
   }, []);
 
-  if (!contactInfo) {
-    return null; // veya bir yükleme göstergesi
-  }
+  // Varsayılan iletişim bilgileri
+  const defaultContactInfo: ContactInfo = {
+    address: 'Karlıbayır Mah. Selçuklu Cd. No:5 D:11 Arnavutköy/İSTANBUL',
+    phone: '+90 212 597 97 00',
+    mobile: '+90 533 490 29 85',
+    email: 'tsivri@pusulaharita.tr',
+    workingHours: {
+      weekdays: '09:00 - 18:00',
+      saturday: '09:00 - 14:00',
+      sunday: 'Kapalı'
+    }
+  };
+
+  // contactInfo yoksa varsayılan değerleri kullan
+  const displayContactInfo = contactInfo || defaultContactInfo;
 
   // Google Maps navigasyon URL'si oluştur
-  const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(contactInfo.address)}`;
+  const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(displayContactInfo.address)}`;
 
   return (
     <footer className="bg-gray-900 text-white">
@@ -60,33 +74,33 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="hover:text-blue-400 transition-colors"
                 >
-                  {contactInfo.address}
+                  {displayContactInfo.address}
                 </a>
               </li>
               <li className="flex items-center space-x-3">
                 <FaPhone className="text-blue-400" />
-                <a href={`tel:${contactInfo.phone}`} className="hover:text-blue-400 transition-colors">
-                  {contactInfo.phone}
+                <a href={`tel:${displayContactInfo.phone}`} className="hover:text-blue-400 transition-colors">
+                  {displayContactInfo.phone}
                 </a>
               </li>
               <li className="flex items-center space-x-3">
                 <FaMobile className="text-blue-400" />
-                <a href={`tel:${contactInfo.mobile}`} className="hover:text-blue-400 transition-colors">
-                  {contactInfo.mobile}
+                <a href={`tel:${displayContactInfo.mobile}`} className="hover:text-blue-400 transition-colors">
+                  {displayContactInfo.mobile}
                 </a>
               </li>
               <li className="flex items-center space-x-3">
                 <FaEnvelope className="text-blue-400" />
-                <a href={`mailto:${contactInfo.email}`} className="hover:text-blue-400 transition-colors">
-                  {contactInfo.email}
+                <a href={`mailto:${displayContactInfo.email}`} className="hover:text-blue-400 transition-colors">
+                  {displayContactInfo.email}
                 </a>
               </li>
               <li className="flex items-center space-x-3">
                 <FaClock className="text-blue-400" />
                 <div>
-                  <p>Pazartesi - Cuma: {contactInfo.workingHours.weekdays}</p>
-                  <p>Cumartesi: {contactInfo.workingHours.saturday}</p>
-                  <p>Pazar: {contactInfo.workingHours.sunday}</p>
+                  <p>Pazartesi - Cuma: {displayContactInfo.workingHours.weekdays}</p>
+                  <p>Cumartesi: {displayContactInfo.workingHours.saturday}</p>
+                  <p>Pazar: {displayContactInfo.workingHours.sunday}</p>
                 </div>
               </li>
             </ul>
