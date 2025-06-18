@@ -313,6 +313,45 @@ export default function ContactPage() {
             </form>
           </div>
         </div>
+
+        {/* Google Maps Haritası */}
+        <div className="mt-16">
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">
+              Konumumuz
+            </h2>
+            <p className="text-gray-600 mb-8 text-center">
+              Ofisimizi ziyaret etmek için aşağıdaki haritayı kullanabilirsiniz
+            </p>
+            <div className="w-full h-96 rounded-lg overflow-hidden shadow-lg">
+              <iframe
+                src="https://www.google.com/maps?q=Karlıbayır+Mah.+Selçuklu+Cd.+No:5+D:11+Arnavutköy/İSTANBUL&hl=tr&z=16&output=embed"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Pusula Harita Konumu"
+              ></iframe>
+            </div>
+            {contactInfo && (
+              <div className="mt-6 text-center">
+                <p className="text-gray-600">
+                  <strong>Adres:</strong> {contactInfo.address}
+                </p>
+                <a
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(contactInfo.address)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                >
+                  Yol Tarifi Al
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

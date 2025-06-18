@@ -94,30 +94,30 @@ export default function Footer() {
 
           {/* Hızlı Linkler */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">Hızlı Linkler</h3>
+            <h3 className="text-lg font-semibold text-white">Hızlı Linkler</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/" className="text-gray-600 hover:text-blue-600">
+                <Link href="/" className="text-gray-300 hover:text-blue-400">
                   Ana Sayfa
                 </Link>
               </li>
               <li>
-                <Link href="/hizmetlerimiz" className="text-gray-600 hover:text-blue-600">
+                <Link href="/hizmetlerimiz" className="text-gray-300 hover:text-blue-400">
                   Hizmetlerimiz
                 </Link>
               </li>
               <li>
-                <Link href="/hakkimizda" className="text-gray-600 hover:text-blue-600">
+                <Link href="/hakkimizda" className="text-gray-300 hover:text-blue-400">
                   Hakkımızda
                 </Link>
               </li>
               <li>
-                <Link href="/projeler" className="text-gray-600 hover:text-blue-600">
+                <Link href="/projeler" className="text-gray-300 hover:text-blue-400">
                   RealityModel
                 </Link>
               </li>
               <li>
-                <Link href="/iletisim" className="text-gray-600 hover:text-blue-600">
+                <Link href="/iletisim" className="text-gray-300 hover:text-blue-400">
                   İletişim
                 </Link>
               </li>
@@ -126,7 +126,7 @@ export default function Footer() {
                   href="/images/Katalog.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-blue-600"
+                  className="text-gray-300 hover:text-blue-400"
                 >
                   Katalog
                 </a>
