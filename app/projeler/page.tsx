@@ -120,6 +120,27 @@ export default function RealityModel() {
             </div>
           </div>
         </motion.div>
+
+        {/* Reality Model Linki */}
+        <motion.div
+          {...fadeInUp}
+          className="mt-16 flex justify-center"
+        >
+          <div className="bg-gradient-to-r from-violet-600 to-blue-600 p-1 rounded-2xl shadow-lg w-full max-w-xl">
+            <div className="bg-white rounded-2xl p-8 flex flex-col items-center">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">3D Reality Modeli Görüntüle</h3>
+              <p className="text-gray-600 mb-6 text-center">Bayramtepe projesinin 3D reality modelini interaktif olarak keşfetmek için aşağıdaki butona tıklayın.</p>
+              <a
+                href="/01_Bayramtepe_202502_3MX/App/index.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block px-8 py-4 bg-gradient-to-r from-violet-600 to-blue-600 text-white text-lg font-semibold rounded-xl shadow hover:scale-105 hover:from-violet-700 hover:to-blue-700 transition-transform duration-200"
+              >
+                Altınşehir,Güvercintepe
+              </a>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
