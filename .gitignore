@@ -38,3 +38,8 @@ next-env.d.ts
 # Prisma
 /prisma/dev.db
 /prisma/dev.db-journal
+
+# Large 3D model files
+*.3mxb
+*.3mx
+public/01_Bayramtepe_202502_3MX/
