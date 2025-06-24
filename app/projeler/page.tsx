@@ -131,7 +131,7 @@ export default function RealityModel() {
               <h3 className="text-2xl font-bold text-gray-900 mb-2">3D Reality Modeli Görüntüle</h3>
               <p className="text-gray-600 mb-6 text-center">Bayramtepe projesinin 3D reality modelini interaktif olarak keşfetmek için aşağıdaki butona tıklayın.</p>
               <a
-                href="https://drive.google.com/drive/folders/1inHTVS1Sx21aMJAJ3ccTpZmAVOpbYIdu?usp=sharing"
+                href="https://drive.google.com/file/d/1LFESYYGtB4nV_ixnHNyztIYyZ7CaUFES/view?usp=drive_link"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block px-8 py-4 bg-gradient-to-r from-violet-600 to-blue-600 text-white text-lg font-semibold rounded-xl shadow hover:scale-105 hover:from-violet-700 hover:to-blue-700 transition-transform duration-200"
